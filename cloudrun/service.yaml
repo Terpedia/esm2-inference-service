@@ -1,0 +1,43 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: terpedia-esm2
+  annotations:
+    run.googleapis.com/launch-stage: GA
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/cpu-throttling: "false"
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "3"
+        run.googleapis.com/startup-cpu-boost: "true"
+    spec:
+      containerConcurrency: 32
+      timeoutSeconds: 300
+      containers:
+        - image: REGION-docker.pkg.dev/PROJECT_ID/terpedia/esm2-inference:IMAGE_TAG
+          env:
+            - name: ESM2_DEVICE
+              value: cuda
+            - name: ESM2_MAX_BATCH_SEQUENCES
+              value: "16"
+            - name: ESM2_MAX_BATCH_TOKENS
+              value: "8192"
+            - name: ESM2_BATCH_WAIT_MS
+              value: "8"
+          resources:
+            limits:
+              cpu: "8"
+              memory: 32Gi
+              nvidia.com/gpu: "1"
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+      nodeSelector:
+        run.googleapis.com/accelerator: nvidia-l4
+

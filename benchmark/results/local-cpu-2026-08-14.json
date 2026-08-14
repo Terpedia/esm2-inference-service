@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-08-14T13:38:10.986603+00:00",
+  "scope": "local_measured",
+  "model": "facebook/esm2_t6_8M_UR50D",
+  "checkpoint_sha256": "985b890e2cbabb3b3a3a37a502ab341a0d7a41b6554eb3a429125e3f3ee2da56",
+  "resolved_revision": "c731040fcd8d73dceaa04b0a8e6329b345b0f5df",
+  "device": "cpu",
+  "hardware": "macOS-26.6-arm64-arm-64bit",
+  "python": "3.12.8",
+  "torch": "2.13.0",
+  "batch_sequences": 4,
+  "batch_residues": 242,
+  "warmup_iterations": 2,
+  "measured_iterations": 10,
+  "latency_ms": {
+    "median": 39.40708294976503,
+    "mean": 40.65289559075609,
+    "min": 37.70329093094915,
+    "max": 47.46070806868374
+  },
+  "throughput_residues_per_second": 5952.8354987590965,
+  "note": "Measured locally. This is not a Cloud Run L4 result."
+}

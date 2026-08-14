@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Terpedia ESM-2 Inference</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <p class="eyebrow">TERPEDIA · PROTEIN INTELLIGENCE</p>
+    <h1>ESM-2 embeddings,<br><em>with receipts.</em></h1>
+    <p class="lead">A containerized protein-embedding service with masked mean pooling, dynamic GPU batching, and cryptographic checkpoint provenance on every response.</p>
+    <div class="actions"><a href="https://github.com/Terpedia/esm2-inference-service">View source</a><a class="secondary" href="#usage">Run locally</a></div>
+
+    <section class="grid">
+      <article><b>01</b><h2>Correct pooling</h2><p>Attention masks remove padding; special-token masks remove BOS/EOS. Only biological residues contribute to the mean.</p></article>
+      <article><b>02</b><h2>Efficient GPU use</h2><p>Concurrent HTTP calls coalesce inside a bounded window and residue budget before one batched forward pass.</p></article>
+      <article><b>03</b><h2>Verifiable provenance</h2><p>Every result names the resolved model revision, checkpoint-file hashes, and a deterministic SHA-256 manifest digest.</p></article>
+    </section>
+
+    <section id="usage">
+      <p class="eyebrow">API</p><h2>One request. Auditable output.</h2>
+      <pre><code>curl -X POST "$SERVICE_URL/v1/embeddings" \
+  -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -H "Content-Type: application/json" \
+  -d '{"request_id":"terpene-synthase-17","sequences":["MKTIIALSYIFCLVFAD"]}'</code></pre>
+      <p>Responses include the embedding, a SHA-256 of the input sequence, batch telemetry, pooling method, model revision, and checkpoint provenance.</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">DEPLOYMENT</p><h2>GPU when needed. Zero when idle.</h2>
+      <div class="flow"><span>Client</span><i>→</i><span>Cloud Run</span><i>→</i><span>Dynamic batcher</span><i>→</i><span>NVIDIA L4</span></div>
+      <p>The supplied Cloud Run configuration uses one L4 per instance, instance-based billing, private IAM access, bounded concurrency, and minimum instances set to zero. First-request latency includes container and model initialization.</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">BENCHMARK</p><h2>Reproducible, never imagined.</h2>
+      <p>The benchmark records hardware, software versions, model revision, checkpoint digest, batch shape, latency distribution, and residue throughput. Published numbers are local measurements only; no L4 performance is claimed until the cloud benchmark is actually run.</p>
+      <pre><code>python benchmark/run.py --iterations 10 --output benchmark/results/latest.json</code></pre>
+      <p><a href="benchmark.html">Read the benchmark report →</a></p>
+    </section>
+  </main>
+  <footer>Apache-2.0 · Built for reproducible protein intelligence</footer>
+</body>
+</html>
+
